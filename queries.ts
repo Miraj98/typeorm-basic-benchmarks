@@ -5,7 +5,6 @@ import { getRandomId } from "./utils";
 
 async function fetchPosts() {
   const start = performance.now();
-  await AppDataSource.initialize();
   const repo = AppDataSource.getRepository(Post);
 
   /*
@@ -66,9 +65,15 @@ async function fetchPostComments() {
   console.log("comments fetched", comments.length);
 }
 
-async function main() {
-  await fetchPosts();
-  await fetchPostComments();
+async function main(n: number) {
+  await AppDataSource.initialize();
+  for (let i = 0; i < n; i++) {
+    await fetchPosts();
+  }
+  console.log("\n-----------------------\n")
+  for (let i = 0; i < n; i++) {
+    await fetchPostComments();
+  }
 }
 
-main();
+main(10);
