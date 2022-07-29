@@ -2,6 +2,7 @@ import { AppDataSource } from "./datasource";
 import { performance } from "perf_hooks";
 import { Post, Comment } from "./typeorm/schema";
 import { getRandomId } from "./utils";
+import { In } from "typeorm";
 
 async function fetchPosts() {
   const start = performance.now();
@@ -23,6 +24,7 @@ async function fetchPosts() {
     .createQueryBuilder("post")
     .leftJoinAndSelect("post.author", "author")
     .leftJoinAndSelect("post.comments", "comments")
+    .leftJoinAndSelect("comments.author", "comment_author")
     .where("post.id IN (:...ids)", {
       ids: [
         123, 420, 690, 6969, 6942, 1000, 3689, 3000, 2000, 2421, 23, 42, 96,
@@ -30,6 +32,15 @@ async function fetchPosts() {
       ],
     })
     .getMany();
+  // const posts = await repo.find({
+  //   where: {
+  //     id: In([
+  //       123, 420, 690, 6969, 6942, 1000, 3689, 3000, 2000, 2421, 23, 42, 96,
+  //       101, 201, 301, 401, 501,
+  //     ]),
+  //   },
+  //   relations: ["author", "comments", "comments.author"],
+  // });
 
   const timeTaken = performance.now() - start;
 
@@ -70,7 +81,7 @@ async function main(n: number) {
   for (let i = 0; i < n; i++) {
     await fetchPosts();
   }
-  console.log("\n-----------------------\n")
+  console.log("\n-----------------------\n");
   for (let i = 0; i < n; i++) {
     await fetchPostComments();
   }
