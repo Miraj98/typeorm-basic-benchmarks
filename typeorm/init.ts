@@ -87,8 +87,8 @@ async function main() {
   const start = performance.now()
   await initDatabase()
   const afterInit = performance.now()
-  // await createUsers(10000)
-  // await createPosts(4600)
+  await createUsers(10000)
+  await createPosts(4600)
   await createComments(4620)
   const fromStart = performance.now() - start
   const onlyInsertTime = performance.now() - afterInit
